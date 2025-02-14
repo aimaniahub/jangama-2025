@@ -150,18 +150,20 @@ const Dashboard: React.FC<DashboardProps> = () => {
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
           <h2 className="text-xl font-semibold mb-6 text-center">Payment Options</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <button
+            <a
+              href="googleplay://upi/pay?pa=9353789909suco@ybl&pn=Kalyana%20Belaku&am=500&cu=INR&tn=Marriage%20Registration%20Fee"
               onClick={() => handlePaymentClick('GPay')}
               className="flex items-center justify-center space-x-2 bg-purple-600 hover:bg-purple-700 text-white py-4 px-6 rounded-lg font-medium transition-colors"
             >
               <span>Google Pay</span>
-            </button>
-            <button
-              onClick={() => handlePaymentClick('PhonePe')}
+            </a>
+            <a
+              href="phonepe://pay?pa=9353789909suco@ybl&pn=Kalyana%20Belaku&am=500&cu=INR&tn=Marriage%20Registration%20Fee"
+              onClick={() => handlePaymentClick('PhonePe')} 
               className="flex items-center justify-center space-x-2 bg-indigo-600 hover:bg-indigo-700 text-white py-4 px-6 rounded-lg font-medium transition-colors"
             >
               <span>Phone Pe</span>
-            </button>
+            </a>
             <button
               onClick={() => handlePaymentClick('Bank')}
               className="flex items-center justify-center space-x-2 bg-green-600 hover:bg-green-700 text-white py-4 px-6 rounded-lg font-medium transition-colors"
@@ -181,7 +183,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
         isOpen={isPaymentModalOpen}
         onClose={() => setIsPaymentModalOpen(false)}
         paymentMethod={selectedPaymentMethod}
-        amount="5"
+        amount="500"
       />
     </div>
   );
