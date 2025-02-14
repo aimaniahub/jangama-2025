@@ -1,6 +1,6 @@
 import React from 'react';
 import { X } from 'lucide-react';
-import { QRCodeSVG } from 'qrcode.react'; // Change the import to use named import
+import { QRCodeSVG } from 'qrcode.react';
 import { useNavigate } from 'react-router-dom';
 import { doc, setDoc } from 'firebase/firestore';
 import { db, auth } from '../lib/firebase';
@@ -17,20 +17,35 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
   isOpen, 
   onClose, 
   paymentMethod,
-  amount = "5" // Default amount in paise
+  amount = "5" // Updated amount to 500
 }) => {
   const navigate = useNavigate();
 
   if (!isOpen) return null;
 
-  // Replace these with your actual UPI details
-  const upiDetails = {
-    upiId: "9353789909suco@ybl", // You'll provide this
+  // Payment details
+  const paymentDetails = {
+    upiId: "9353789909suco@ybl",
     name: "Kalyana Belaku",
-    currency: "INR"
+    currency: "INR",
+    message: "Marriage Registration Fee"
   };
 
-  const upiLink = `upi://pay?pa=${upiDetails.upiId}&pn=${encodeURIComponent(upiDetails.name)}&am=${amount}&cu=${upiDetails.currency}`;
+  // Generate payment links for different apps
+  const getPaymentLink = () => {
+    const baseUpiUrl = `upi://pay?pa=${paymentDetails.upiId}&pn=${encodeURIComponent(paymentDetails.name)}&am=${amount}&cu=${paymentDetails.currency}&tn=${encodeURIComponent(paymentDetails.message)}`;
+    
+    switch(paymentMethod) {
+      case 'GPay':
+        return `upi://pay?pa=${paymentDetails.upiId}&pn=${encodeURIComponent(paymentDetails.name)}&am=${amount}&cu=${paymentDetails.currency}&tn=${encodeURIComponent(paymentDetails.message)}`;
+      case 'PhonePe':
+        return `upi://pay?pa=${paymentDetails.upiId}&pn=${encodeURIComponent(paymentDetails.name)}&am=${amount}&cu=${paymentDetails.currency}&tn=${encodeURIComponent(paymentDetails.message)}`;
+      case 'Bank':
+        return baseUpiUrl;
+      default:
+        return baseUpiUrl;
+    }
+  };
 
   const handleDirectPayment = async () => {
     if (!auth.currentUser) {
@@ -48,11 +63,12 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
         timestamp: new Date().toISOString()
       }, { merge: true });
 
-      // Open UPI payment
-      window.location.href = upiLink;
+      // Open payment app
+      const paymentUrl = getPaymentLink();
+      window.location.href = paymentUrl;
 
       // Show instructions
-      toast.success('After payment, please proceed to registration', {
+      toast.success('After payment, please send the screenshot to proceed', {
         duration: 5000
       });
 
@@ -63,6 +79,12 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
       console.error('Error initiating payment:', error);
       toast.error('Failed to initiate payment. Please try again.');
     }
+  };
+
+  // Fallback for desktop or if app doesn't open
+  const handleFallbackPayment = () => {
+    const fallbackUrl = `upi://pay?pa=${paymentDetails.upiId}&pn=${encodeURIComponent(paymentDetails.name)}&am=${amount}&cu=${paymentDetails.currency}`;
+    window.location.href = fallbackUrl;
   };
 
   return (
@@ -82,7 +104,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
 
         <div className="space-y-6">
           <div className="text-center">
-            <p className="text-lg font-semibold mb-2">Amount: ₹{parseInt(amount)}</p>
+            <p className="text-lg font-semibold mb-2 dark:text-white">Amount: ₹{parseInt(amount)}</p>
             <p className="text-sm text-gray-500 dark:text-gray-400">
               Scan QR code or click the button below to pay
             </p>
@@ -91,7 +113,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
           {/* QR Code */}
           <div className="flex justify-center bg-white p-4 rounded-lg">
             <QRCodeSVG 
-              value={upiLink}
+              value={getPaymentLink()}
               size={200}
               level="H"
               includeMargin={true}
@@ -104,16 +126,29 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
             onClick={handleDirectPayment}
             className="w-full bg-orange-600 hover:bg-orange-700 text-white py-3 px-4 rounded-lg font-medium transition-colors"
           >
-            Pay Now with UPI Apps
+            Pay ₹{amount} with {paymentMethod}
+          </button>
+
+          {/* Fallback Button */}
+          <button
+            onClick={handleFallbackPayment}
+            className="w-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 py-3 px-4 rounded-lg font-medium transition-colors mt-2"
+          >
+            Pay using any UPI App
           </button>
 
           {/* Payment Instructions */}
           <div className="text-sm text-gray-500 dark:text-gray-400 space-y-2">
             <p>1. Scan the QR code with any UPI app</p>
-            <p>2. Or click the button above to open your UPI app</p>
+            <p>2. Or click the button above to open {paymentMethod}</p>
             <p>3. Complete the payment in your UPI app</p>
             <p>4. Take a screenshot of the payment success</p>
             <p>5. Send the screenshot to: <span className="font-semibold">78291 46919</span></p>
+          </div>
+
+          {/* UPI ID Display */}
+          <div className="text-center text-sm text-gray-500 dark:text-gray-400 mt-4">
+            <p>UPI ID: <span className="font-mono font-medium">{paymentDetails.upiId}</span></p>
           </div>
         </div>
       </div>
