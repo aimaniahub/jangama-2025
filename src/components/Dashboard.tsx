@@ -138,7 +138,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
             <h2 className="text-xl font-semibold mb-4">Registration Rules</h2>
             <div className="space-y-2 text-xl">
-              <p>ಹೆಸರನ್ನು ನೊಂದಾಯಿಸಲು ಬಯಸುವವರು ಕೆಳಗಿರುವ ನಂಬರ್ಗೆ, Rs 5,</p>
+              <p>ಹೆಸರನ್ನು ನೊಂದಾಯಿಸಲು ಬಯಸುವವರು ಕೆಳಗಿರುವ ನಂಬರ್ಗೆ, Rs 500,</p>
               <p>3 ತಿಂಗಳ ಕಾಲವದಿ,</p>
               <p>ಗೂಗಲ್ ಪೇ - Google Pay</p>
               <p>ಫೋನ್ ಪೇ - Phone Pay</p>
@@ -151,14 +151,14 @@ const Dashboard: React.FC<DashboardProps> = () => {
           <h2 className="text-xl font-semibold mb-6 text-center">Payment Options</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <a
-              href="googlepay://upi/pay?pa=9353789909suco@ybl&pn=Kalyana%20Belaku&am=500&cu=INR&tn=Marriage%20Registration%20Fee"
+              href="googleplay://upi/pay?pa=9353789909suco@ybl&pn=Kalyana%20Belaku&am=5&cu=INR&tn=Marriage%20Registration%20Fee"
               onClick={() => handlePaymentClick('GPay')}
               className="flex items-center justify-center space-x-2 bg-purple-600 hover:bg-purple-700 text-white py-4 px-6 rounded-lg font-medium transition-colors"
             >
               <span>Google Pay</span>
             </a>
             <a
-              href="phonepe://pay?pa=9353789909suco@ybl&pn=Kalyana%20Belaku&am=500&cu=INR&tn=Marriage%20Registration%20Fee"
+              href="phonepe://pay?pa=9353789909suco@ybl&pn=Kalyana%20Belaku&am=5&cu=INR&tn=Marriage%20Registration%20Fee"
               onClick={() => handlePaymentClick('PhonePe')} 
               className="flex items-center justify-center space-x-2 bg-indigo-600 hover:bg-indigo-700 text-white py-4 px-6 rounded-lg font-medium transition-colors"
             >
